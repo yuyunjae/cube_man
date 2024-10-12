@@ -258,8 +258,8 @@ void	drawJointParts(glm::mat4& manMat, int matIndex)
 	bottomMat = glm::translate(manMat, armPos[matIndex]);
 	bottomMat = glm::translate(bottomMat, moveUpJointPos);
 	bottomMat = glm::rotate(bottomMat, -rotAngle, glm::vec3(0, 0, 1)); // also rotate bottom parts
-	bottomMat = glm::translate(bottomMat, handPos[matIndex]);
-	//bottomMat = glm::rotate(bottomMat, -rotAngle, glm::vec3(0, 0, 1));
+	bottomMat = glm::translate(bottomMat, glm::vec3(0, -armSize[1], 0)); // attach arm-hand
+	bottomMat = glm::rotate(bottomMat, -rotAngle, glm::vec3(0, 0, 1));
 	bottomMat = glm::translate(bottomMat, moveDownJointPos);
 	bottomMat = glm::scale(bottomMat, armSize);
 
@@ -369,7 +369,7 @@ void idle()
 	{
 		float t = abs(currTime - prevTime);
 		rotAngle += glm::radians(t*360.0f / 10000.0f);
-		/*timeRatio = (timeRatio + (int)t) % period;*/
+		timeRatio = (timeRatio + (int)t) % period;
 		timeIndex = timeRatio % 4;
 		
 		prevTime = currTime;
