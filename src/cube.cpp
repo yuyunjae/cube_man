@@ -60,7 +60,7 @@ quad(int a, int b, int c, int d)
 	colors[Index] = vertex_colors[b]; points[Index] = vertices[b];  Index++;
 	colors[Index] = vertex_colors[c]; points[Index] = vertices[c];  Index++;
 	colors[Index] = vertex_colors[a]; points[Index] = vertices[a];  Index++;
-	colors[Index] = vertex_colors[c]; points[Index] = vertices[c];  Index++;
+	colors[Index] = vertex_colors[c]; points[Index] = vertices[c];  Index++; 
 	colors[Index] = vertex_colors[d]; points[Index] = vertices[d];  Index++;
 }
 
@@ -137,6 +137,11 @@ int period = 1000;
 int	moveCount = 8;
 int timeInterval = period / moveCount;
 
+// time
+float timeRatio = 0.2f;
+int timeIndex = 0;
+
+
 // up-down move // 8 level
 float upDownMove[] = {0.1f, 0.05f, 0.0f, 0.05f, 0.1f, 0.05f, 0.0f, 0.05f};
 
@@ -155,9 +160,6 @@ float upperlegRight[] = { glm::radians(45.0f), glm::radians(22.5f), 0.0f, glm::r
 // lowerleg move
 float lowerlegLeft[] = { glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f), glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f) };
 float lowerlegRight[] = { glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f), glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f) };
-
-float timeRatio = 0.2f;
-int timeIndex = 0;
 
 
 // standard position of parts
