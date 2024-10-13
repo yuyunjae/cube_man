@@ -133,33 +133,33 @@ glm::vec3 upperlegSize = glm::vec3(0.15, 0.3, 0.15); // upperleg, lowerleg
 glm::vec3 armSize = glm::vec3(0.12, 0.3, 0.12); // arm, forearm
 
 // move period
-int period = 1000;
+int period = 800;
 int	moveCount = 8;
 int timeInterval = period / moveCount;
 
 // time
 float timeRatio = 0.2f;
-int timeIndex = 0;
+int timeIndex = 0; 
 
 
 // up-down move // 8 level
 float upDownMove[] = {0.1f, 0.05f, 0.0f, 0.05f, 0.1f, 0.05f, 0.0f, 0.05f};
 
 // arm move
-float armLeft[] = { glm::radians(45.0f), glm::radians(22.5f), 0.0f, glm::radians(-22.5f), glm::radians(-45.0f), glm::radians(-22.5f), 0.0f, glm::radians(22.5f) };
-float armRight[] = { glm::radians(-45.0f), glm::radians(-22.5f), 0.0f, glm::radians(22.5f), glm::radians(45.0f), glm::radians(22.5f), 0.0f, glm::radians(-22.5f) };
+float armLeft[] = { glm::radians(45.0f), glm::radians(32.0f), 0.0f, glm::radians(-32.0f), glm::radians(-45.0f), glm::radians(-32.0f), 0.0f, glm::radians(32.0f) };
+float armRight[] = { glm::radians(-45.0f), glm::radians(-32.0f), 0.0f, glm::radians(32.0f), glm::radians(45.0f), glm::radians(32.0f), 0.0f, glm::radians(-32.0f) };
 
 // forearm move
-float forearmLeft[] = { glm::radians(-30.0f), glm::radians(-45.0f), glm::radians(-60.0f), glm::radians(-75.0f), glm::radians(-90.0f), glm::radians(-75.0f), glm::radians(-60.0f), glm::radians(-45.0f) };
-float forearmRight[] = { glm::radians(-90.0f), glm::radians(-75.0f), glm::radians(-60.0f), glm::radians(-45.0f), glm::radians(-30.0f), glm::radians(-45.0f), glm::radians(-60.0f), glm::radians(-75.0f) };
+float forearmLeft[] = { glm::radians(-25.0f), glm::radians(-35.0f), glm::radians(-60.0f), glm::radians(-85.0f), glm::radians(-90.0f), glm::radians(-85.0f), glm::radians(-60.0f), glm::radians(-35.0f) };
+float forearmRight[] = { glm::radians(-90.0f), glm::radians(-85.0f), glm::radians(-60.0f), glm::radians(-35.0f), glm::radians(-25.0f), glm::radians(-35.0f), glm::radians(-60.0f), glm::radians(-85.0f) };
 
 // upperleg move
-float upperlegLeft[] = { glm::radians(-45.0f), glm::radians(-22.5f), 0.0f, glm::radians(22.5f), glm::radians(45.0f), glm::radians(22.5f), 0.0f, glm::radians(-22.5f) };
-float upperlegRight[] = { glm::radians(45.0f), glm::radians(22.5f), 0.0f, glm::radians(-22.5f), glm::radians(-45.0f), glm::radians(-22.5f), 0.0f, glm::radians(22.5f) };
+float upperlegLeft[] = { glm::radians(-60.0f), glm::radians(-40.0f), 0.0f, glm::radians(40.0f), glm::radians(60.0f), glm::radians(40.0f), 0.0f, glm::radians(-40.0f) };
+float upperlegRight[] = { glm::radians(60.0f), glm::radians(40.0f), 0.0f, glm::radians(-40.0f), glm::radians(-60.0f), glm::radians(-40.0f), 0.0f, glm::radians(40.0f) };
 
 // lowerleg move
-float lowerlegLeft[] = { glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f), glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f) };
-float lowerlegRight[] = { glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f), glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f) };
+float lowerlegLeft[] = { glm::radians(45.0f), glm::radians(30.0f), 0.0f, glm::radians(40.0f), glm::radians(50.0f), glm::radians(40.0f), 0.0f, glm::radians(30.0f) };
+float lowerlegRight[] = { glm::radians(50.0f), glm::radians(40.0f), 0.0f, glm::radians(30.0f), glm::radians(45.0f), glm::radians(30.0f), 0.0f, glm::radians(40.0f) };
 
 
 // standard position of parts
