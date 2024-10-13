@@ -129,8 +129,8 @@ init()
 // element size
 glm::vec3 bodySize = glm::vec3(0.3, 0.5, 0.4);
 glm::vec3 headSize = glm::vec3(0.25, 0.25, 0.25);
-glm::vec3 legSize = glm::vec3(0.15, 0.3, 0.15); // leg, foot
-glm::vec3 armSize = glm::vec3(0.12, 0.3, 0.12); // arm, hand
+glm::vec3 upperlegSize = glm::vec3(0.15, 0.3, 0.15); // upperleg, lowerleg
+glm::vec3 armSize = glm::vec3(0.12, 0.3, 0.12); // arm, forearm
 
 // move period
 int period = 1000;
@@ -144,17 +144,17 @@ float upDownMove[] = {0.1f, 0.05f, 0.0f, 0.05f, 0.1f, 0.05f, 0.0f, 0.05f};
 float armLeft[] = { glm::radians(45.0f), glm::radians(22.5f), 0.0f, glm::radians(-22.5f), glm::radians(-45.0f), glm::radians(-22.5f), 0.0f, glm::radians(22.5f) };
 float armRight[] = { glm::radians(-45.0f), glm::radians(-22.5f), 0.0f, glm::radians(22.5f), glm::radians(45.0f), glm::radians(22.5f), 0.0f, glm::radians(-22.5f) };
 
-// hand move
-float handLeft[] = { glm::radians(-30.0f), glm::radians(-45.0f), glm::radians(-60.0f), glm::radians(-75.0f), glm::radians(-90.0f), glm::radians(-75.0f), glm::radians(-60.0f), glm::radians(-45.0f) };
-float handRight[] = { glm::radians(-90.0f), glm::radians(-75.0f), glm::radians(-60.0f), glm::radians(-45.0f), glm::radians(-30.0f), glm::radians(-45.0f), glm::radians(-60.0f), glm::radians(-75.0f) };
+// forearm move
+float forearmLeft[] = { glm::radians(-30.0f), glm::radians(-45.0f), glm::radians(-60.0f), glm::radians(-75.0f), glm::radians(-90.0f), glm::radians(-75.0f), glm::radians(-60.0f), glm::radians(-45.0f) };
+float forearmRight[] = { glm::radians(-90.0f), glm::radians(-75.0f), glm::radians(-60.0f), glm::radians(-45.0f), glm::radians(-30.0f), glm::radians(-45.0f), glm::radians(-60.0f), glm::radians(-75.0f) };
 
-// leg move
-float legLeft[] = { glm::radians(-45.0f), glm::radians(-22.5f), 0.0f, glm::radians(22.5f), glm::radians(45.0f), glm::radians(22.5f), 0.0f, glm::radians(-22.5f) };
-float legRight[] = { glm::radians(45.0f), glm::radians(22.5f), 0.0f, glm::radians(-22.5f), glm::radians(-45.0f), glm::radians(-22.5f), 0.0f, glm::radians(22.5f) };
+// upperleg move
+float upperlegLeft[] = { glm::radians(-45.0f), glm::radians(-22.5f), 0.0f, glm::radians(22.5f), glm::radians(45.0f), glm::radians(22.5f), 0.0f, glm::radians(-22.5f) };
+float upperlegRight[] = { glm::radians(45.0f), glm::radians(22.5f), 0.0f, glm::radians(-22.5f), glm::radians(-45.0f), glm::radians(-22.5f), 0.0f, glm::radians(22.5f) };
 
-// foot move
-float footLeft[] = { glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f), glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f) };
-float footRight[] = { glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f), glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f) };
+// lowerleg move
+float lowerlegLeft[] = { glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f), glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f) };
+float lowerlegRight[] = { glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f), glm::radians(60.0f), glm::radians(30.0f), 0.0f, glm::radians(30.0f) };
 
 float timeRatio = 0.2f;
 int timeIndex = 0;
@@ -170,25 +170,25 @@ glm::vec3 armPos[2] =
 	glm::vec3(0, (bodySize[1] - armSize[1]) / 2, (bodySize[2] + armSize[2]) / 2)   // left arm
 };
 
-glm::vec3 handPos[2] =
+glm::vec3 forearmPos[2] =
 {
-	glm::vec3(0, (bodySize[1] - 3 * armSize[1]) / 2, (bodySize[2] + armSize[2]) / (-2)),  // right hand
-	glm::vec3(0, (bodySize[1] - 3 * armSize[1]) / 2, (bodySize[2] + armSize[2]) / 2) // left hand
+	glm::vec3(0, (bodySize[1] - 3 * armSize[1]) / 2, (bodySize[2] + armSize[2]) / (-2)),  // right forearm
+	glm::vec3(0, (bodySize[1] - 3 * armSize[1]) / 2, (bodySize[2] + armSize[2]) / 2) // left forearm
 };
 
-glm::vec3 legPos[2] =
+glm::vec3 upperlegPos[2] =
 {
-	 glm::vec3(0, (bodySize[1] + legSize[1]) / (-2), legSize[2] / (-2)), // right leg
-	 glm::vec3(0, (bodySize[1] + legSize[1]) / (-2), legSize[2] / 2)   // left leg
+	 glm::vec3(0, (bodySize[1] + upperlegSize[1]) / (-2), upperlegSize[2] / (-2)), // right upperleg
+	 glm::vec3(0, (bodySize[1] + upperlegSize[1]) / (-2), upperlegSize[2] / 2)   // left upperleg
 };
 
-glm::vec3 footPos[2] =
+glm::vec3 lowerlegPos[2] =
 {
-	glm::vec3(0, (bodySize[1] + 3 * legSize[1]) / (-2), legSize[2] / (-2)),  // right foot
-	glm::vec3(0, (bodySize[1] + 3 * legSize[1]) / (-2), legSize[2] / 2) // left foot
+	glm::vec3(0, (bodySize[1] + 3 * upperlegSize[1]) / (-2), upperlegSize[2] / (-2)),  // right lowerleg
+	glm::vec3(0, (bodySize[1] + 3 * upperlegSize[1]) / (-2), upperlegSize[2] / 2) // left lowerleg
 };
 
-// joint (body-arm | arm-hand || body-leg | leg-foot)
+// joint (body-arm | arm-forearm || body-upperleg | upperleg-lowerleg)
 glm::vec3 moveUpJointPos = glm::vec3(0, armSize[1] / 2, 0);
 glm::vec3 moveDownJointPos = glm::vec3(0, armSize[1] / (-2), 0);
 
@@ -208,16 +208,16 @@ void	drawJointUpperParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3)
 {
 	glm::mat4 topMat, bottomMat, pvmMat;
 	float armAngle;
-	float handAngle;
+	float forearmAngle;
 	if (matIndex)
 	{
 		armAngle = armLeft[timeIndex] - (armLeft[timeIndex] - armLeft[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
-		handAngle = handLeft[timeIndex] - (handLeft[timeIndex] - handLeft[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
+		forearmAngle = forearmLeft[timeIndex] - (forearmLeft[timeIndex] - forearmLeft[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
 	}
 	else
 	{
 		armAngle = armRight[timeIndex] - (armRight[timeIndex] - armRight[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
-		handAngle = handRight[timeIndex] - (handRight[timeIndex] - handRight[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
+		forearmAngle = forearmRight[timeIndex] - (forearmRight[timeIndex] - forearmRight[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
 	}
 
 	topMat = glm::translate(manMat, armPos[matIndex] + moveUpJointPos + upDownVec3);
@@ -227,8 +227,8 @@ void	drawJointUpperParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3)
 
 	bottomMat = glm::translate(manMat, armPos[matIndex] + moveUpJointPos + upDownVec3);
 	bottomMat = glm::rotate(bottomMat, armAngle, glm::vec3(0, 0, 1)); // also rotate bottom parts
-	bottomMat = glm::translate(bottomMat, glm::vec3(0, -armSize[1], 0)); // attach arm-hand
-	bottomMat = glm::rotate(bottomMat, handAngle, glm::vec3(0, 0, 1));
+	bottomMat = glm::translate(bottomMat, glm::vec3(0, -armSize[1], 0)); // attach arm-forearm
+	bottomMat = glm::rotate(bottomMat, forearmAngle, glm::vec3(0, 0, 1));
 	bottomMat = glm::translate(bottomMat, moveDownJointPos);
 	bottomMat = glm::scale(bottomMat, armSize);
 
@@ -245,30 +245,30 @@ void	drawJointUpperParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3)
 void	drawJointLowerParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3)
 {
 	glm::mat4 topMat, bottomMat, pvmMat;
-	float legAngle;
-	float footAngle;
+	float upperlegAngle;
+	float lowerlegAngle;
 	if (matIndex)
 	{
-		legAngle = legLeft[timeIndex] - (legLeft[timeIndex] - legLeft[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
-		footAngle = footLeft[timeIndex] - (footLeft[timeIndex] - footLeft[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
+		upperlegAngle = upperlegLeft[timeIndex] - (upperlegLeft[timeIndex] - upperlegLeft[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
+		lowerlegAngle = lowerlegLeft[timeIndex] - (lowerlegLeft[timeIndex] - lowerlegLeft[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
 	}
 	else
 	{
-		legAngle = legRight[timeIndex] - (legRight[timeIndex] - legRight[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
-		footAngle = footRight[timeIndex] - (footRight[timeIndex] - footRight[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
+		upperlegAngle = upperlegRight[timeIndex] - (upperlegRight[timeIndex] - upperlegRight[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
+		lowerlegAngle = lowerlegRight[timeIndex] - (lowerlegRight[timeIndex] - lowerlegRight[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
 	}
 
-	topMat = glm::translate(manMat, legPos[matIndex] + moveUpJointPos + upDownVec3);
-	topMat = glm::rotate(topMat, legAngle, glm::vec3(0, 0, 1));
+	topMat = glm::translate(manMat, upperlegPos[matIndex] + moveUpJointPos + upDownVec3);
+	topMat = glm::rotate(topMat, upperlegAngle, glm::vec3(0, 0, 1));
 	topMat = glm::translate(topMat, moveDownJointPos);
-	topMat = glm::scale(topMat, legSize);
+	topMat = glm::scale(topMat, upperlegSize);
 
-	bottomMat = glm::translate(manMat, legPos[matIndex] + moveUpJointPos + upDownVec3);
-	bottomMat = glm::rotate(bottomMat, legAngle, glm::vec3(0, 0, 1)); // also rotate bottom parts
-	bottomMat = glm::translate(bottomMat, glm::vec3(0, -legSize[1], 0)); // attach arm-hand
-	bottomMat = glm::rotate(bottomMat, footAngle, glm::vec3(0, 0, 1));
+	bottomMat = glm::translate(manMat, upperlegPos[matIndex] + moveUpJointPos + upDownVec3);
+	bottomMat = glm::rotate(bottomMat, upperlegAngle, glm::vec3(0, 0, 1)); // also rotate bottom parts
+	bottomMat = glm::translate(bottomMat, glm::vec3(0, -upperlegSize[1], 0)); // attach arm-forearm
+	bottomMat = glm::rotate(bottomMat, lowerlegAngle, glm::vec3(0, 0, 1));
 	bottomMat = glm::translate(bottomMat, moveDownJointPos);
-	bottomMat = glm::scale(bottomMat, legSize);
+	bottomMat = glm::scale(bottomMat, upperlegSize);
 
 	pvmMat = projectMat * viewMat * topMat;
 	glUniformMatrix4fv(pvmMatrixID, 1, GL_FALSE, &pvmMat[0][0]);
@@ -290,8 +290,8 @@ void	drawMan(glm::mat4 manMat)
 
 	for (int i = 0; i < 2; i++)
 	{
-		drawJointUpperParts(manMat, i, upDownVec3); // arm, hand
-		drawJointLowerParts(manMat, i, upDownVec3); // leg, foot
+		drawJointUpperParts(manMat, i, upDownVec3); // arm, forearm
+		drawJointLowerParts(manMat, i, upDownVec3); // upperleg, lowerleg
 	}
 }
 

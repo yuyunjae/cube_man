@@ -33,7 +33,7 @@
 #  include "GL/freeglut_ext.h"
 #endif  // __APPLE__
 
-// Define a helpful macro for handling offsets into buffer objects
+// Define a helpful macro for forearmling offsets into buffer objects
 #define BUFFER_OFFSET( offset )   ((GLvoid*) (offset))
 
 //----------------------------------------------------------------------------
