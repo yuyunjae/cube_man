@@ -371,7 +371,7 @@ main(int argc, char **argv)
 	glutInitWindowSize(512, 512);
 	glutInitContextVersion(3, 2);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
-	glutCreateWindow("Color Car");
+	glutCreateWindow("Cube Man");
 
 	glewInit();
 
