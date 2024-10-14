@@ -167,7 +167,7 @@ glm::vec3 moveDownJointPos = glm::vec3(0, armSize[1] / (-2), 0);
 
 
 // move period
-int period = 1600;
+int period = 800;
 int	moveCount = 8;
 int timeInterval = period / moveCount;
 
@@ -267,8 +267,8 @@ void	drawJointLowerParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3)
 	topMat = glm::scale(topMat, upperlegSize);
 
 	bottomMat = glm::translate(manMat, upperlegPos[matIndex] + moveUpJointPos + upDownVec3);
-	bottomMat = glm::rotate(bottomMat, upperlegAngle, glm::vec3(0, 0, 1)); // also rotate bottom parts
-	bottomMat = glm::translate(bottomMat, glm::vec3(0, -upperlegSize[1], 0)); // attach arm-forearm
+	bottomMat = glm::rotate(bottomMat, upperlegAngle, glm::vec3(0, 0, 1));
+	bottomMat = glm::translate(bottomMat, glm::vec3(0, -upperlegSize[1], 0));
 	bottomMat = glm::rotate(bottomMat, lowerlegAngle, glm::vec3(0, 0, 1));
 	bottomMat = glm::translate(bottomMat, moveDownJointPos);
 	bottomMat = glm::scale(bottomMat, upperlegSize);
