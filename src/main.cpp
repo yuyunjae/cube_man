@@ -1,7 +1,3 @@
-//
-// Display a illuminated sphere
-//
-
 #include "initShader.h"
 #include "sphere.h"
 #include "cube.h"
@@ -18,7 +14,6 @@ glm::mat4 modelMat = glm::mat4(1.0f);
 
 int shadeMode = NO_LIGHT;
 int isTexture = false;
-int isRotate = false;
 
 GLuint projectMatrixID;
 GLuint viewMatrixID;
@@ -26,7 +21,6 @@ GLuint modelMatrixID;
 GLuint shadeModeID;
 GLuint textureModeID;
 
-GLuint pvmMatrixID;
 typedef glm::vec4  color4;
 typedef glm::vec4  point4;
 
@@ -36,53 +30,79 @@ Cube cube;
 //----------------------------------------------------------------------------
 
 // OpenGL initialization
-void init()
+GLuint vao[2], vbo[2]; // (sphere, cube)
+
+void init() 
 {
-	// Create a vertex array object
-	GLuint vao[1];
-	glGenVertexArrays(1, vao);
-	glBindVertexArray(vao[0]);
-
-	// Create and initialize a buffer object
-	GLuint buffer[1];
-	glGenBuffers(1, buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
-
-	int vertSize = sizeof(sphere.verts[0])*sphere.verts.size();
-	int normalSize = sizeof(sphere.normals[0])*sphere.normals.size();
-	int texSize = sizeof(sphere.texCoords[0])*sphere.texCoords.size();
-	glBufferData(GL_ARRAY_BUFFER, vertSize + normalSize + texSize,
-		NULL, GL_STATIC_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, vertSize, sphere.verts.data());
-	glBufferSubData(GL_ARRAY_BUFFER, vertSize, normalSize, sphere.normals.data());
-	glBufferSubData(GL_ARRAY_BUFFER, vertSize+normalSize, texSize, sphere.texCoords.data());
-
 	// Load shaders and use the resulting shader program
 	GLuint program = InitShader("src/vshader.glsl", "src/fshader.glsl");
+	if (!program) {
+		std::cerr << "Shader program failed to initialize" << std::endl;
+		exit(EXIT_FAILURE);
+	}
 	glUseProgram(program);
 
+    glGenVertexArrays(2, vao); // (sphere, cube)
+    glGenBuffers(2, vbo); // (sphere, cube)
+
+    // sphere
+    glBindVertexArray(vao[0]); 
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+
+    int sphereVertSize = sizeof(sphere.verts[0]) * sphere.verts.size();
+    int sphereNormalSize = sizeof(sphere.normals[0]) * sphere.normals.size();
+    int sphereTexSize = sizeof(sphere.texCoords[0]) * sphere.texCoords.size();
+
+    glBufferData(GL_ARRAY_BUFFER, sphereVertSize + sphereNormalSize + sphereTexSize, NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sphereVertSize, sphere.verts.data());
+    glBufferSubData(GL_ARRAY_BUFFER, sphereVertSize, sphereNormalSize, sphere.normals.data());
+    glBufferSubData(GL_ARRAY_BUFFER, sphereVertSize + sphereNormalSize, sphereTexSize, sphere.texCoords.data());
+
 	// set up vertex arrays
-	GLuint vPosition = glGetAttribLocation(program, "vPosition");
-	glEnableVertexAttribArray(vPosition);
-	glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0,
-		BUFFER_OFFSET(0));
+    GLuint vPosition = glGetAttribLocation(program, "vPosition");
+    glEnableVertexAttribArray(vPosition);
+    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 
-	GLuint vNormal = glGetAttribLocation(program, "vNormal");
-	glEnableVertexAttribArray(vNormal);
-	glVertexAttribPointer(vNormal, 4, GL_FLOAT, GL_FALSE, 0,
-		BUFFER_OFFSET(vertSize));
+    GLuint vNormal = glGetAttribLocation(program, "vNormal");
+    glEnableVertexAttribArray(vNormal);
+    glVertexAttribPointer(vNormal, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sphereVertSize));
 
-	GLuint vTexCoord = glGetAttribLocation(program, "vTexCoord");
-	glEnableVertexAttribArray(vTexCoord);
-	glVertexAttribPointer(vTexCoord, 2, GL_FLOAT, GL_FALSE, 0,
-		BUFFER_OFFSET(vertSize+normalSize));
+    GLuint vTexCoord = glGetAttribLocation(program, "vTexCoord");
+    glEnableVertexAttribArray(vTexCoord);
+    glVertexAttribPointer(vTexCoord, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sphereVertSize + sphereNormalSize));
+
+	// cube
+	glBindVertexArray(vao[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+
+    int cubeVertSize = sizeof(cube.points);
+    int cubeNormalSize = sizeof(cube.normals);
+    int cubeTexSize = sizeof(cube.texCoords);
+
+    glBufferData(GL_ARRAY_BUFFER, cubeVertSize + cubeNormalSize + cubeTexSize, NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, cubeVertSize, cube.points);
+    glBufferSubData(GL_ARRAY_BUFFER, cubeVertSize, cubeNormalSize, cube.normals);
+    glBufferSubData(GL_ARRAY_BUFFER, cubeVertSize + cubeNormalSize, cubeTexSize,cube.texCoords);
+
+    // set up vertex arrays
+    glEnableVertexAttribArray(vPosition);
+    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+    glEnableVertexAttribArray(vNormal);
+    glVertexAttribPointer(vNormal, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(cubeVertSize));
+
+    glEnableVertexAttribArray(vTexCoord);
+    glVertexAttribPointer(vTexCoord, 2, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(cubeVertSize + cubeNormalSize));
+
+    glBindVertexArray(0); // VAO 바인딩 해제
+
 
 	projectMatrixID = glGetUniformLocation(program, "mProject");
 	projectMat = glm::perspective(glm::radians(65.0f), 1.0f, 0.1f, 100.0f);
 	glUniformMatrix4fv(projectMatrixID, 1, GL_FALSE, &projectMat[0][0]);
 
 	viewMatrixID = glGetUniformLocation(program, "mView");
-	viewMat = glm::lookAt(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	viewMat = glm::lookAt(glm::vec3(0, 0, 2), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	glUniformMatrix4fv(viewMatrixID, 1, GL_FALSE, &viewMat[0][0]);
 
 	modelMatrixID = glGetUniformLocation(program, "mModel");
@@ -184,20 +204,19 @@ float lowerlegLeft[] = { glm::radians(45.0f), glm::radians(30.0f), 0.0f, glm::ra
 float lowerlegRight[] = { glm::radians(50.0f), glm::radians(40.0f), 0.0f, glm::radians(30.0f), glm::radians(45.0f), glm::radians(30.0f), 0.0f, glm::radians(40.0f) };
 
 
-void	drawParts(glm::mat4& manMat, glm::vec3& partsPos, glm::vec3& partsSize, glm::vec3& upDownVec3)
+void	drawParts(glm::mat4& manMat, glm::vec3& partsPos, glm::vec3& partsSize, glm::vec3& upDownVec3) // head
 {
-	glm::mat4 modelMat, pvmMat;
+	glm::mat4 headMat, pvmMat;
 
-	modelMat = glm::translate(manMat, partsPos + upDownVec3);
-	modelMat = glm::scale(modelMat, partsSize);
-	pvmMat = projectMat * viewMat * modelMat;
-	glUniformMatrix4fv(pvmMatrixID, 1, GL_FALSE, &pvmMat[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, NumVertices);
+	headMat = glm::translate(manMat, partsPos + upDownVec3);
+	headMat = glm::scale(headMat, partsSize);
+	glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &headMat[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, NUMVERTICES);
 }
 
-void	drawJointUpperParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3)
+void	drawJointUpperParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3) // arm
 {
-	glm::mat4 topMat, bottomMat, pvmMat;
+	glm::mat4 topMat, bottomMat;
 	float armAngle;
 	float forearmAngle;
 	if (matIndex)
@@ -223,19 +242,17 @@ void	drawJointUpperParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3)
 	bottomMat = glm::translate(bottomMat, moveDownJointPos);
 	bottomMat = glm::scale(bottomMat, armSize);
 
-	pvmMat = projectMat * viewMat * topMat;
-	glUniformMatrix4fv(pvmMatrixID, 1, GL_FALSE, &pvmMat[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, NumVertices);
+	glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &topMat[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, NUMVERTICES);
 
-	pvmMat = projectMat * viewMat * bottomMat;
-	glUniformMatrix4fv(pvmMatrixID, 1, GL_FALSE, &pvmMat[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, NumVertices);
+	glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &bottomMat[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, NUMVERTICES);
 }
 
 
-void	drawJointLowerParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3)
+void	drawJointLowerParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3) // leg
 {
-	glm::mat4 topMat, bottomMat, pvmMat;
+	glm::mat4 topMat, bottomMat;
 	float upperlegAngle;
 	float lowerlegAngle;
 	if (matIndex)
@@ -261,18 +278,16 @@ void	drawJointLowerParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3)
 	bottomMat = glm::translate(bottomMat, moveDownJointPos);
 	bottomMat = glm::scale(bottomMat, upperlegSize);
 
-	pvmMat = projectMat * viewMat * topMat;
-	glUniformMatrix4fv(pvmMatrixID, 1, GL_FALSE, &pvmMat[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, NumVertices);
+	glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &topMat[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, NUMVERTICES);
 
-	pvmMat = projectMat * viewMat * bottomMat;
-	glUniformMatrix4fv(pvmMatrixID, 1, GL_FALSE, &pvmMat[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, NumVertices);
+	glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &bottomMat[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, NUMVERTICES);
 }
 
 void	drawMan(glm::mat4 manMat)
 {
-	glm::mat4 modelMat, pvmMat;
+	glm::mat4 pvmMat;
 	glm::vec3 upDownVec3 = glm::vec3(0, upDownMove[timeIndex] - (upDownMove[timeIndex] - upDownMove[(timeIndex + 1) % moveCount]) * (timeRatio - timeIndex * timeInterval) / timeInterval, 0);
 
 	drawParts(manMat, bodyPos, bodySize, upDownVec3);
@@ -291,10 +306,17 @@ void	drawMan(glm::mat4 manMat)
 
 void display(void)
 {
+	glm::mat4 worldMat;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &modelMat[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, sphere.verts.size());
+	worldMat = glm::mat4(1.0f);
+	glBindVertexArray(vao[1]); // cube
+	drawMan(worldMat);
+
+	 //sphere 부분
+	//glBindVertexArray(vao[0]); // sphere
+ //   glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &modelMat[0][0]);
+	//glDrawArrays(GL_TRIANGLES, 0, sphere.verts.size());
 
 	glutSwapBuffers();
 }
@@ -306,17 +328,16 @@ void idle()
 	static int prevTime = glutGet(GLUT_ELAPSED_TIME);
 	int currTime = glutGet(GLUT_ELAPSED_TIME);
 
-	if (isRotate && abs(currTime - prevTime) >= 20)
+	if (abs(currTime - prevTime) >= 20)
 	{
 		float t = abs(currTime - prevTime);
-		float speed = 360.0f / 10000.0f;
-		modelMat = glm::rotate(modelMat, glm::radians(t*speed), glm::vec3(1.0f, 1.0f, 0.0f));
+		timeRatio += t;
+		while (timeRatio >= period)
+			timeRatio -= period;
+		timeIndex = (int)(timeRatio) / timeInterval;
+		
 		prevTime = currTime;
 		glutPostRedisplay();
-	} 
-	else if (!isRotate)
-	{
-		prevTime = currTime;
 	}
 }
 
@@ -330,9 +351,17 @@ void keyboard(unsigned char key, int x, int y)
 		glUniform1i(shadeModeID, shadeMode);
 		glutPostRedisplay();
 		break;
-	case 'r': case 'R':
-		isRotate = !isRotate;
-		glutPostRedisplay();
+	case '1':
+		viewMat = glm::lookAt(glm::vec3(0, 0, 2), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(viewMatrixID, 1, GL_FALSE, &viewMat[0][0]);
+		break;
+	case '2':
+		viewMat = glm::lookAt(glm::vec3(2, 0.8, -1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(viewMatrixID, 1, GL_FALSE, &viewMat[0][0]);
+		break;
+	case '3':
+		viewMat = glm::lookAt(glm::vec3(-2, -0.4, -0.4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(viewMatrixID, 1, GL_FALSE, &viewMat[0][0]);
 		break;
 	case 't': case 'T':
 		isTexture = !isTexture;
@@ -367,7 +396,7 @@ int main(int argc, char **argv)
 	glutInitWindowSize(512, 512);
 	glutInitContextVersion(3, 2);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
-	glutCreateWindow("Color Cube");
+	glutCreateWindow("Cube Man");
 
 	glewInit();
 

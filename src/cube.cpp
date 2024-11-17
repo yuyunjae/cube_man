@@ -13,12 +13,12 @@ void Cube::quad(int a, int b, int c, int d, int &Index)
 	n[3] = 0.0;
 	glm::normalize(n);
 
-	points[Index] = vertices[a]; normals[Index] = n; texCoords[Index] = glm::vec2(1.0f, 0.0f); Index++;
-	points[Index] = vertices[b]; normals[Index] = n; texCoords[Index] = glm::vec2(0.0f, 0.0f); Index++;
-	points[Index] = vertices[c]; normals[Index] = n; texCoords[Index] = glm::vec2(0.0f, 1.0f); Index++;
-	points[Index] = vertices[a]; normals[Index] = n; texCoords[Index] = glm::vec2(1.0f, 0.0f); Index++;
-	points[Index] = vertices[c]; normals[Index] = n; texCoords[Index] = glm::vec2(0.0f, 1.0f); Index++; 
-	points[Index] = vertices[d]; normals[Index] = n; texCoords[Index] = glm::vec2(1.0f, 1.0f); Index++;
+	points[Index] = vertices[a]; normals[Index] = n; texCoords[Index] = glm::vec2(1.0f, 1.0f); Index++;
+	points[Index] = vertices[b]; normals[Index] = n; texCoords[Index] = glm::vec2(1.0f, 0.0f); Index++;
+	points[Index] = vertices[c]; normals[Index] = n; texCoords[Index] = glm::vec2(0.0f, 0.0f); Index++;
+	points[Index] = vertices[a]; normals[Index] = n; texCoords[Index] = glm::vec2(1.0f, 1.0f); Index++;
+	points[Index] = vertices[c]; normals[Index] = n; texCoords[Index] = glm::vec2(0.0f, 0.0f); Index++; 
+	points[Index] = vertices[d]; normals[Index] = n; texCoords[Index] = glm::vec2(0.0f, 1.0f); Index++;
 }
 
 void Cube::makeQuad()
@@ -28,7 +28,7 @@ void Cube::makeQuad()
 	quad(2, 3, 7, 6, Index);
 	quad(3, 0, 4, 7, Index);
 	quad(6, 5, 1, 2, Index);
-	quad(4, 5, 6, 7, Index);
+	quad(6, 7, 4, 5, Index);
 	quad(5, 4, 0, 1, Index);
 }
 
