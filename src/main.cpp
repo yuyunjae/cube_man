@@ -116,10 +116,13 @@ void init()
 	textureModeID = glGetUniformLocation(program, "isTexture");
 	glUniform1i(textureModeID, isTexture);
 
+
+
 	// Load the texture using any two methods
-	GLuint Texture = loadBMP_custom("pumpkin.bmp");
-	//GLuint Texture = loadBMP_custom("leather.bmp");
-	//GLuint Texture = loadBMP_custom("foot.bmp");
+	//GLuint Texture = loadBMP_custom("pumpkin.bmp"); // 머리
+	//GLuint Texture = loadBMP_custom("leather.bmp"); // 바지
+	//GLuint Texture = loadBMP_custom("foot.bmp"); // 발
+	GLuint Texture = loadBMP_custom("body.bmp");
 	//GLuint Texture = loadDDS("uvtemplate.DDS");
 
 	// Get a handle for our "myTextureSampler" uniform
@@ -374,6 +377,10 @@ void keyboard(unsigned char key, int x, int y)
 		break;
 	case '3':
 		viewMat = glm::lookAt(glm::vec3(-2, -0.4, -0.4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(viewMatrixID, 1, GL_FALSE, &viewMat[0][0]);
+		break;
+	case '4':
+		viewMat = glm::lookAt(glm::vec3(0, 0, -2), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 		glUniformMatrix4fv(viewMatrixID, 1, GL_FALSE, &viewMat[0][0]);
 		break;
 	case 't': case 'T':

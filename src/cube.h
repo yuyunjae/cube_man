@@ -37,19 +37,20 @@ private:
 		glm::vec4(0.5, -0.5, -0.5, 1.0)
 	};
 	glm::vec2 verCoord[6] = {
-		glm::vec2(0.75f, 0.5f),
-		glm::vec2(1.0f, 0.75f),
-		glm::vec2(0.75f, 0.75f),
-		glm::vec2(0.5f, 0.75f),
-		glm::vec2(0.25f, 0.75f),
-		glm::vec2(0.75f, 1.0f)
-	};
-	glm::vec2 moveWay[4] = {
-		glm::vec2(0.0f, -0.25f),
-		glm::vec2(0.0f, 0.0f),
-		glm::vec2(-0.25f, 0.0f),
-		glm::vec2(-0.25f, -0.25f)
-	};
+        glm::vec2(0.25f, 0.5f),
+        glm::vec2(0.0f, 0.25f),
+        glm::vec2(0.25f, 0.25f),
+        glm::vec2(0.5f, 0.25f),
+        glm::vec2(0.75f, 0.25f),
+        glm::vec2(0.25f, 0.0f)
+    };
+
+    glm::vec2 moveWay[4] = {
+        glm::vec2(0.0f, 0.25f),
+        glm::vec2(0.0f, 0.0f),
+        glm::vec2(0.25f, 0.0f),
+        glm::vec2(0.25f, 0.25f)
+    };
 	void texturePos(int opt, int index);
 	void quad(int a, int b, int c, int d, int opt, int &index);
 	void makeQuad();
