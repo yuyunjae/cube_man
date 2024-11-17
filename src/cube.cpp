@@ -1,3 +1,38 @@
+#include "cube.h"
+
+void Cube::quad(int a, int b, int c, int d, int &Index)
+{
+	glm::vec4 n;
+	for (int i = 0; i < 3; i++)
+	{
+		n[i] = vertices[a][i];
+		n[i] += vertices[b][i];
+		n[i] += vertices[c][i];
+		n[i] += vertices[d][i];
+	}
+	n[3] = 0.0;
+	glm::normalize(n);
+
+	points[Index] = vertices[a]; normals[Index] = n; texCoords[Index] = glm::vec2(1.0f, 0.0f); Index++;
+	points[Index] = vertices[b]; normals[Index] = n; texCoords[Index] = glm::vec2(0.0f, 0.0f); Index++;
+	points[Index] = vertices[c]; normals[Index] = n; texCoords[Index] = glm::vec2(0.0f, 1.0f); Index++;
+	points[Index] = vertices[a]; normals[Index] = n; texCoords[Index] = glm::vec2(1.0f, 0.0f); Index++;
+	points[Index] = vertices[c]; normals[Index] = n; texCoords[Index] = glm::vec2(0.0f, 1.0f); Index++; 
+	points[Index] = vertices[d]; normals[Index] = n; texCoords[Index] = glm::vec2(1.0f, 1.0f); Index++;
+}
+
+void Cube::makeQuad()
+{
+	int Index = 0;
+	quad(1, 0, 3, 2, Index);
+	quad(2, 3, 7, 6, Index);
+	quad(3, 0, 4, 7, Index);
+	quad(6, 5, 1, 2, Index);
+	quad(4, 5, 6, 7, Index);
+	quad(5, 4, 0, 1, Index);
+}
+
+/*
 //
 // Display a color cube
 //
@@ -388,3 +423,4 @@ main(int argc, char **argv)
 	glutMainLoop();
 	return 0;
 }
+*/
