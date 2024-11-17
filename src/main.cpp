@@ -35,11 +35,11 @@ GLuint program;
 GLuint vao[2], vbo[2]; // (sphere, cube)
 GLuint textures[5]; // texture 
 const char* textureFiles[5] = {
-	"pumpkin.bmp", // head
-	"body.bmp", // body
-	"body.bmp", // arm
-	"leather.bmp", // upperLeg
-	"foot.bmp" // lowerLeg
+	"image/pumpkin.bmp", // head
+	"image/body.bmp", // body
+	"image/arm.bmp", // arm
+	"image/leather.bmp", // upperLeg
+	"image/foot.bmp" // lowerLeg
 };
 
 void init() 

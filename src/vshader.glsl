@@ -20,7 +20,7 @@ void main()
 {
 	gl_Position = mProject * mView * mModel * vPosition;
 
-	vec4 vColor = vec4(1, 1, 1, 1);
+	vec4 vColor = vec4(1.0, 0.7, 0.7, 1);
 	vec4 L = normalize(vec4(4, 3, 5, 0));
 	float kd = 0.8, ks = 1.0, ka = 0.2, shininess = 60;
 	vec4 Id = vColor;
@@ -50,7 +50,7 @@ void main()
 
 		color = ambient * Ia + diff * Id + spec * Is;
 	}
-	else // if (shadeMode == PHONG)
+	else if (shadeMode == PHONG)
 	{
 		fragPos = mModel * vPosition;
 		normal = transpose(inverse(mModel)) * vNormal;

@@ -25,7 +25,7 @@ void main()
 		fColor = texture( cubeTextures, texCoord ).rgba;
 	else if (shadeMode == GOURAUD)
 		fColor = color * texture( cubeTextures, texCoord ).rgba;
-	else // if (shadeMode == PHONG)
+	else if (shadeMode == PHONG)
 	{
 		// ambient
 		float ambient = ka;
