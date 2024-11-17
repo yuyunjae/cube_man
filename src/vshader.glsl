@@ -15,16 +15,12 @@ uniform mat4 mProject;
 uniform mat4 mView;
 uniform mat4 mModel;
 uniform int shadeMode;
-uniform int isTexture;
 
 void main() 
 {
 	gl_Position = mProject * mView * mModel * vPosition;
 
-	vec4 vColor = vec4(0, 0, 1, 1);
-	if (isTexture == 1) {
-		vColor = vec4(1, 1, 1, 1);
-	}
+	vec4 vColor = vec4(1, 1, 1, 1);
 	vec4 L = normalize(vec4(4, 3, 5, 0));
 	float kd = 0.8, ks = 1.0, ka = 0.2, shininess = 60;
 	vec4 Id = vColor;

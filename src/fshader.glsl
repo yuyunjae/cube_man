@@ -11,8 +11,7 @@ out vec4  fColor;
 
 uniform int shadeMode;
 uniform mat4 mView;
-uniform int isTexture;
-uniform sampler2D sphereTexture;
+uniform sampler2D cubeTextures;
 
 void main() 
 { 
@@ -23,23 +22,9 @@ void main()
 	vec4 Ia = color;
 
 	if (shadeMode == NO_LIGHT)
-	{
-		if (isTexture == 1) {
-			fColor = texture( sphereTexture, texCoord ).rgba;
-		} 
-		else {
-			fColor = color;
-		}
-	}
+		fColor = texture( cubeTextures, texCoord ).rgba;
 	else if (shadeMode == GOURAUD)
-	{
-		if (isTexture == 1) {
-			fColor = color * texture( sphereTexture, texCoord ).rgba;
-		} 
-		else {
-			fColor = color;
-		}
-	}
+		fColor = color * texture( cubeTextures, texCoord ).rgba;
 	else // if (shadeMode == PHONG)
 	{
 		// ambient
@@ -56,9 +41,7 @@ void main()
 		float spec = ks * pow(clamp(dot(V, R), 0, 1), shininess);
 
 		fColor = ambient * Ia + diff * Id + spec * Is;
-		if (isTexture == 1) {
-			fColor = fColor * texture( sphereTexture, texCoord ).rgba;
-		}
+		fColor = fColor * texture( cubeTextures, texCoord ).rgba;
 	}
 } 
 

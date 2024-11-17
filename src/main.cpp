@@ -5,6 +5,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
 #include "texture.hpp"
+#include <string>
 
 enum eShadeMode { NO_LIGHT, GOURAUD, PHONG, NUM_LIGHT_MODE };
 
@@ -13,13 +14,13 @@ glm::mat4 viewMat;
 glm::mat4 modelMat = glm::mat4(1.0f);
 
 int shadeMode = NO_LIGHT;
-int isTexture = false;
 
 GLuint projectMatrixID;
 GLuint viewMatrixID;
 GLuint modelMatrixID;
 GLuint shadeModeID;
 GLuint textureModeID;
+GLuint TextureID;
 
 typedef glm::vec4  color4;
 typedef glm::vec4  point4;
@@ -30,13 +31,21 @@ Cube cube;
 //----------------------------------------------------------------------------
 
 // OpenGL initialization
+GLuint program;
 GLuint vao[2], vbo[2]; // (sphere, cube)
 GLuint textures[5]; // texture 
+const char* textureFiles[5] = {
+	"pumpkin.bmp", // head
+	"body.bmp", // body
+	"body.bmp", // arm
+	"leather.bmp", // upperLeg
+	"foot.bmp" // lowerLeg
+};
 
 void init() 
 {
 	// Load shaders and use the resulting shader program
-	GLuint program = InitShader("src/vshader.glsl", "src/fshader.glsl");
+	program = InitShader("src/vshader.glsl", "src/fshader.glsl");
 	if (!program) {
 		std::cerr << "Shader program failed to initialize" << std::endl;
 		exit(EXIT_FAILURE);
@@ -113,27 +122,24 @@ void init()
 	shadeModeID = glGetUniformLocation(program, "shadeMode");
 	glUniform1i(shadeModeID, shadeMode);
 
-	textureModeID = glGetUniformLocation(program, "isTexture");
-	glUniform1i(textureModeID, isTexture);
 
+	for (int i = 0; i < 5; ++i) {
+		textures[i] = loadBMP_custom(textureFiles[i]);
+	}
 
-
-	// Load the texture using any two methods
-	//GLuint Texture = loadBMP_custom("pumpkin.bmp"); // 머리
-	//GLuint Texture = loadBMP_custom("leather.bmp"); // 바지
-	//GLuint Texture = loadBMP_custom("foot.bmp"); // 발
-	GLuint Texture = loadBMP_custom("body.bmp");
+	//GLuint Texture = loadBMP_custom("earth.bmp");
 	//GLuint Texture = loadDDS("uvtemplate.DDS");
 
 	// Get a handle for our "myTextureSampler" uniform
-	GLuint TextureID = glGetUniformLocation(program, "sphereTexture");
+	TextureID = glGetUniformLocation(program, "cubeTextures");
 
 	// Bind our texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, Texture);
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
 
 	// Set our "myTextureSampler" sampler to use Texture Unit 0
 	glUniform1i(TextureID, 0);
+
 
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -214,6 +220,12 @@ void	drawHeadParts(glm::mat4& manMat, glm::vec3& partsPos, glm::vec3& partsSize,
 {
 	glm::mat4 headMat, pvmMat;
 
+	glBindVertexArray(vao[0]); // sphere 
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glUniform1i(TextureID, 0);
+
 	headMat = glm::translate(manMat, partsPos + upDownVec3);
 	headMat = glm::rotate(headMat, glm::radians(90.0f), glm::vec3(1, 0, 0));
 	headMat = glm::scale(headMat, partsSize);
@@ -224,6 +236,12 @@ void	drawHeadParts(glm::mat4& manMat, glm::vec3& partsPos, glm::vec3& partsSize,
 void	drawBodyParts(glm::mat4& manMat, glm::vec3& partsPos, glm::vec3& partsSize, glm::vec3& upDownVec3) // body
 {
 	glm::mat4 headMat, pvmMat;
+
+	glBindVertexArray(vao[1]); // cube
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
+	glUniform1i(TextureID, 0);
 
 	headMat = glm::translate(manMat, partsPos + upDownVec3);
 	headMat = glm::scale(headMat, partsSize);
@@ -236,6 +254,11 @@ void	drawJointUpperParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3)
 	glm::mat4 topMat, bottomMat;
 	float armAngle;
 	float forearmAngle;
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textures[2]);
+	glUniform1i(TextureID, 0);
+
 	if (matIndex)
 	{
 		armAngle = armLeft[timeIndex] - (armLeft[timeIndex] - armLeft[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
@@ -272,6 +295,7 @@ void	drawJointLowerParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3)
 	glm::mat4 topMat, bottomMat;
 	float upperlegAngle;
 	float lowerlegAngle;
+
 	if (matIndex)
 	{
 		upperlegAngle = upperlegLeft[timeIndex] - (upperlegLeft[timeIndex] - upperlegLeft[(timeIndex + 1) % moveCount]) * abs(timeRatio - timeIndex * timeInterval) / timeInterval;
@@ -295,9 +319,15 @@ void	drawJointLowerParts(glm::mat4& manMat, int matIndex, glm::vec3& upDownVec3)
 	bottomMat = glm::translate(bottomMat, moveDownJointPos);
 	bottomMat = glm::scale(bottomMat, upperlegSize);
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textures[3]);
+	glUniform1i(TextureID, 0);
 	glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &topMat[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, NUMVERTICES);
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textures[4]);
+	glUniform1i(TextureID, 0);
 	glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &bottomMat[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, NUMVERTICES);
 }
@@ -308,11 +338,7 @@ void	drawMan(glm::mat4 manMat)
 	glm::vec3 upDownVec3 = glm::vec3(0, upDownMove[timeIndex] - (upDownMove[timeIndex] - upDownMove[(timeIndex + 1) % moveCount]) * (timeRatio - timeIndex * timeInterval) / timeInterval, 0);
 
 
-	glBindVertexArray(vao[0]); // sphere
-	//glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &modelMat[0][0]);
-	//glDrawArrays(GL_TRIANGLES, 0, sphere.verts.size());
 	drawHeadParts(manMat, headPos, headSize, upDownVec3);
-	glBindVertexArray(vao[1]); // cube
 	drawBodyParts(manMat, bodyPos, bodySize, upDownVec3);
 
 
@@ -382,11 +408,6 @@ void keyboard(unsigned char key, int x, int y)
 	case '4':
 		viewMat = glm::lookAt(glm::vec3(0, 0, -2), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 		glUniformMatrix4fv(viewMatrixID, 1, GL_FALSE, &viewMat[0][0]);
-		break;
-	case 't': case 'T':
-		isTexture = !isTexture;
-		glUniform1i(textureModeID, isTexture);
-		glutPostRedisplay();
 		break;
 	case 033:  // Escape key
 	case 'q': case 'Q':
