@@ -126,8 +126,6 @@ void init()
 	for (int i = 0; i < 5; ++i) {
 		textures[i] = loadBMP_custom(textureFiles[i]);
 	}
-
-	//GLuint Texture = loadBMP_custom("earth.bmp");
 	//GLuint Texture = loadDDS("uvtemplate.DDS");
 
 	// Get a handle for our "myTextureSampler" uniform

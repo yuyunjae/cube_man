@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 #include "glm/glm.hpp"
-//#include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/constants.hpp"
 
 using namespace std;
@@ -13,9 +12,6 @@ using namespace std;
 
 class Cube {
 public:
-	// vector<glm::vec4> verts;
-	// vector<glm::vec4> normals;
-	// vector<glm::vec2> texCoords;
 	glm::vec4 points[NUMVERTICES];
 	glm::vec4 normals[NUMVERTICES];
 	glm::vec2 texCoords[NUMVERTICES];
