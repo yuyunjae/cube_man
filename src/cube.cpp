@@ -301,7 +301,7 @@ void	drawMan(glm::mat4 manMat)
 
 void display(void)
 {
-	glm::mat4 worldMat, pvmMat;
+	glm::mat4 worldMat;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	worldMat = glm::mat4(1.0f);

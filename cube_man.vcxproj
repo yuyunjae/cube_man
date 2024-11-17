@@ -141,9 +141,15 @@
   <ItemGroup>
     <ClCompile Include="src\cube.cpp" />
     <ClCompile Include="src\InitShader.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\sphere.cpp" />
+    <ClCompile Include="src\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cube.h" />
+    <ClInclude Include="src\initShader.h" />
+    <ClInclude Include="src\sphere.h" />
+    <ClInclude Include="src\texture.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\fshader.glsl" />
