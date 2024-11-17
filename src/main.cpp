@@ -31,6 +31,7 @@ Cube cube;
 
 // OpenGL initialization
 GLuint vao[2], vbo[2]; // (sphere, cube)
+GLuint textures[5]; // texture 
 
 void init() 
 {
@@ -116,7 +117,9 @@ void init()
 	glUniform1i(textureModeID, isTexture);
 
 	// Load the texture using any two methods
-	GLuint Texture = loadBMP_custom("earth.bmp");
+	GLuint Texture = loadBMP_custom("pumpkin.bmp");
+	//GLuint Texture = loadBMP_custom("leather.bmp");
+	//GLuint Texture = loadBMP_custom("foot.bmp");
 	//GLuint Texture = loadDDS("uvtemplate.DDS");
 
 	// Get a handle for our "myTextureSampler" uniform
@@ -143,7 +146,7 @@ glm::vec3 armSize = glm::vec3(0.12, 0.3, 0.12); // arm, forearm
 
 // standard position of parts
 glm::vec3 bodyPos = glm::vec3(0, 0, 0);
-glm::vec3 headPos = glm::vec3(0, (bodySize[1] + headSize[1]) / 2, 0);
+glm::vec3 headPos = glm::vec3(0, (bodySize[1] + headSize[1]) / 2 + 0.1, 0);
 
 glm::vec3 armPos[2] =
 {
@@ -204,7 +207,18 @@ float lowerlegLeft[] = { glm::radians(45.0f), glm::radians(30.0f), 0.0f, glm::ra
 float lowerlegRight[] = { glm::radians(50.0f), glm::radians(40.0f), 0.0f, glm::radians(30.0f), glm::radians(45.0f), glm::radians(30.0f), 0.0f, glm::radians(40.0f) };
 
 
-void	drawParts(glm::mat4& manMat, glm::vec3& partsPos, glm::vec3& partsSize, glm::vec3& upDownVec3) // head
+void	drawHeadParts(glm::mat4& manMat, glm::vec3& partsPos, glm::vec3& partsSize, glm::vec3& upDownVec3) // head
+{
+	glm::mat4 headMat, pvmMat;
+
+	headMat = glm::translate(manMat, partsPos + upDownVec3);
+	headMat = glm::rotate(headMat, glm::radians(90.0f), glm::vec3(1, 0, 0));
+	headMat = glm::scale(headMat, partsSize);
+	glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &headMat[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, sphere.verts.size());
+}
+
+void	drawBodyParts(glm::mat4& manMat, glm::vec3& partsPos, glm::vec3& partsSize, glm::vec3& upDownVec3) // body
 {
 	glm::mat4 headMat, pvmMat;
 
@@ -290,8 +304,13 @@ void	drawMan(glm::mat4 manMat)
 	glm::mat4 pvmMat;
 	glm::vec3 upDownVec3 = glm::vec3(0, upDownMove[timeIndex] - (upDownMove[timeIndex] - upDownMove[(timeIndex + 1) % moveCount]) * (timeRatio - timeIndex * timeInterval) / timeInterval, 0);
 
-	drawParts(manMat, bodyPos, bodySize, upDownVec3);
-	drawParts(manMat, headPos, headSize, upDownVec3);
+
+	glBindVertexArray(vao[0]); // sphere
+	//glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &modelMat[0][0]);
+	//glDrawArrays(GL_TRIANGLES, 0, sphere.verts.size());
+	drawHeadParts(manMat, headPos, headSize, upDownVec3);
+	glBindVertexArray(vao[1]); // cube
+	drawBodyParts(manMat, bodyPos, bodySize, upDownVec3);
 
 
 	for (int i = 0; i < 2; i++)
@@ -310,13 +329,7 @@ void display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	worldMat = glm::mat4(1.0f);
-	glBindVertexArray(vao[1]); // cube
 	drawMan(worldMat);
-
-	 //sphere 부분
-	//glBindVertexArray(vao[0]); // sphere
- //   glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &modelMat[0][0]);
-	//glDrawArrays(GL_TRIANGLES, 0, sphere.verts.size());
 
 	glutSwapBuffers();
 }

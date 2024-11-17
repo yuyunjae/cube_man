@@ -16,7 +16,7 @@ uniform sampler2D sphereTexture;
 
 void main() 
 { 
-	vec4 L = normalize(vec4(3, 3, 5, 0));
+	vec4 L = normalize(vec4(4, 3, 5, 0));
 	float kd = 0.8, ks = 1.0, ka = 0.2, shininess = 60;
 	vec4 Id = color;
 	vec4 Is = vec4(1, 1, 1, 1);
